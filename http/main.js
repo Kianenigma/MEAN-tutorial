@@ -18,11 +18,11 @@ srv.on('request', (req, res) => {
   console.log(req.url)
 
   let body = []
-
-  .on('end', () => {
-    console.log(body)
-    console.log(body.toString())
-    console.log(JSON.parse(body.toString()))
+  req.on('data', (chunk) => {
+    body.push(chunk)
+  })
+  req.on('end', () => {
+    var req_data = JSON.parse(body.toString())
   })
 
   res.writeHead(200, {'Content-Type': 'text/plain'})
