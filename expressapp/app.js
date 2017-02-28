@@ -3,12 +3,12 @@ let bodyParser = require('body-parser')
 let app = express()
 
 // ------ global middlewares
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
+app.use(require('./logger.middleware'))
+
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
-app.use(require('./logger.middleware'))
+app.use(express.static(__dirname + '/client'))
 
 // ------- Database Config
 let mongoose = require('mongoose')
@@ -32,7 +32,7 @@ let TaskModel = mongoose.model('TaskModel', TaskSchema)
 // ---------
 
 app.get('/', (req, resp) => {
-  resp.sendFile(__dirname + '/index.html')
+  resp.sendFile(__dirname + '/client/index.html')
 })
 
 app.post('/task', (req, resp) => {
