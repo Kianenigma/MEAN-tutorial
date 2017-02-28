@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Yo Express</title>
+    <title>Todo APP</title>
 
     <link href="lib/bootstrap.min.css" rel="stylesheet"/>
     <link href="lib/bootflat.min.css" rel="stylesheet" />
@@ -17,6 +17,33 @@
         <h2>Todo APP</h2>
       </div>
       {{ test }}
-    </div>
+
+      <hr>
+      <h5>data binding</h5>
+      variable `$scope.formData` = {{ formData }}
+      <div>
+        <input type="text" ng-model="formData" class="form-control">
+      </div>
+
+      <hr>
+      <h5>Buttons, functions and more</h5>
+      <blockquote>
+        Notice how inside of ng-* we write simple javascript
+      </blockquote>
+      <button class='btn btn-info' ng-click="aFunc(1, 'hello')"> Click me </button>
+      <div>
+        a funciton returned: {{ giveMeSomething() }}
+      </div>
+
+      <hr>
+
+      <h5>iteration</h5>
+      <div class="list-group">
+        <div class="list-group-item" ng-repeat='person in list'>
+          {{ person }} || {{ person.name }}
+        </div>
+      </div>
+
+    </div> <!-- container -->
   </body>
 </html>
