@@ -13,34 +13,23 @@
   </head>
   <body ng-app='todo-app'>
     <div class="container" ng-controller='todoCtrl'>
+
       <div class="jumbotron" style='padding: 20px; margin-top: 10px'>
         <h2>Todo APP</h2>
       </div>
-      {{ test }}
 
-      <hr>
-      <h5>data binding</h5>
-      variable `$scope.formData` = {{ formData }}
-      <div>
-        <input type="text" ng-model="formData" class="form-control">
-      </div>
-
-      <hr>
-      <h5>Buttons, functions and more</h5>
-      <blockquote>
-        Notice how inside of ng-* we write simple javascript
-      </blockquote>
-      <button class='btn btn-info' ng-click="aFunc(1, 'hello')"> Click me </button>
-      <div>
-        a funciton returned: {{ giveMeSomething() }}
-      </div>
-
+      <form ng-submit='submit()'>
+        <input placeholder='add new task' type="text" ng-model='newTask' class="form-control">
+      </form>
       <hr>
 
-      <h5>iteration</h5>
       <div class="list-group">
-        <div class="list-group-item" ng-repeat='person in list'>
-          {{ person }} || {{ person.name }}
+        <div class="list-group-item" ng-repeat='task in tasks'>
+          <input type="checkbox" ng-checked='task.done'>
+          {{ task.title }}
+          <div style='float: right'>
+            <button type="button" class="btn btn-danger btn-xs" ng-click='delete(task._id)'> delete </button>
+          </div>
         </div>
       </div>
 

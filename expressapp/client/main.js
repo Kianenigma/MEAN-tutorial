@@ -1,25 +1,35 @@
 let todoApp = angular.module('todo-app', [])
 
-todoApp.controller('todoCtrl', function ($scope) {
-  // wtf is $scope? make sure to understand it properly
-
-  $scope.test = 'hello angular'
-
-  // testing ng-model
-  $scope.formData = 'yo'
-
-  // functions and clicks
-  $scope.aFunc = function (param1, param2) {
-    alert('i was called')
-  }
-  $scope.giveMeSomething = function () {
-    return 'booo'
+todoApp.controller('todoCtrl', function ($scope, $http) {
+  $scope.submit = function () {
+    let newTask = $scope.newTask
+    $http.post('/task', {title: newTask})
+    .then(
+      (resp) => {
+        $scope.tasks.push({title: newTask, done: false, _id: resp.data.taskId })
+        $scope.newTask = ''
+      },
+      (resp) => { alert('error while adding task') }
+    )
   }
 
-  // iterations
-  $scope.list = [
-    {name: 'kian', id: 92521052 },
-    {name: 'asqar', id: 92521044 },
-    {name: 'qolam', id: 92521034 }
-  ]
+  $scope.delete = function (taskId) {
+    $http.delete('/task/' + taskId)
+    .then(
+      (resp) => {
+        let index = $scope.tasks.filter((o) => o._id === taskId)[0]._id
+        console.log(index)
+        $scope.tasks.splice(index, 1)
+      },
+      (resp) => { alert('error while deleting task') }
+    )
+  }
+
+  $http.get('/task')
+  .then(
+    (resp) => {
+      $scope.tasks = resp.data
+    },
+    (resp) => {}
+  )
 })
