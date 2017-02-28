@@ -23,7 +23,7 @@ db.once('open', function () {
 const Schema = mongoose.Schema
 
 const TaskSchema = new Schema({
-  title: { type: string, require: true},
+  title: { type: String, require: true},
   done: {type: Boolean}
 })
 
@@ -32,40 +32,53 @@ let TaskModel = mongoose.model('TaskModel', TaskSchema)
 // ---------
 
 app.get('/', (req, resp) => {
-  // things we have in request object
-  console.log(`base url ${req.baseUrl}`)
-  console.log(`body ${JSON.stringify(req.body)}`)
-  console.log(`ip ${req.ip}`)
-  console.log(`cookies ${req.cookies}`)
-  console.log(`method ${req.method}`)
-  console.log(`path ${req.path}`)
-  console.log(`params ${JSON.stringify(req.params)}`)
-  console.log(`query ${JSON.stringify(req.query)}`)
-
-  // test :
-  // curl -X GET -H "Content-Type: application/json" -d '{"yo": "yo"}'  -i "http://localhost:3000"
-
-  // complete info: http://expressjs.com/en/4x/api.html
-
-  // / things we can do with the response
-  // send a html (or any other) file
   resp.sendFile(__dirname + '/index.html')
 })
 
-app.post('/yo', (req, resp) => {
-  if (req.body.yo === 'yo') {
-    resp.status(200).json({data: 'ok'})
-  } else {
-    resp.status(400).end('go to hell')
-  }
+app.post('/task', (req, resp) => {
+  console.log(req.body)
+  let aTask = new TaskModel({
+    title: req.body.title,
+    done: false
+  })
+
+  aTask.save((err) => {
+    if (err) throw err
+    else resp.status(201).json({taskId: aTask._id})
+  })
 })
 
-// anything else will be redirected to home page
-// or a 404 not found page
-app.use((req, resp) => {
-  // any Idea how this works?
-  // Know the locaion header?
-  resp.redirect('/')
+app.get('/task', (req, resp) => {
+  TaskModel.find({}, (err, tasks) => {
+    if (err) throw err
+    else resp.json(tasks)
+  })
+})
+
+app.put('/task/:taskId', (req, resp) => {
+  TaskModel.findById(req.params.taskId, (err, aTask) => {
+    if (err) throw err
+    else {
+      aTask.title = req.body.title
+      aTask.done = req.body.done
+      aTask.save((err) => {
+        if (err) throw err
+        else resp.json({taskId: aTask._id})
+      })
+    }
+  })
+})
+
+app.delete('/task/:taskId', (req, resp) => {
+  TaskModel.findById(req.params.taskId, (err, aTask) => {
+    if (err) throw err
+    else {
+      aTask.remove((err) => {
+        if (err) throw err
+        else resp.json({})
+      })
+    }
+  })
 })
 
 app.listen(3000, function () {
